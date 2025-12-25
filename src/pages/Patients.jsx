@@ -12,9 +12,10 @@ import {
   TextField,
   DialogActions,
   Box,
-  InputAdornment
+  InputAdornment,
+  IconButton
 } from '@mui/material';
-import { Search as SearchIcon } from '@mui/icons-material';
+import { Search as SearchIcon, Close as CloseIcon } from '@mui/icons-material';
 import toast from 'react-hot-toast';
 import { isAdmin } from '../utils/auth';
 
@@ -67,7 +68,7 @@ export default function Patients() {
   return (
     <Box sx={{ p: 3, bgcolor: '#f5f5f5', minHeight: '100vh' }}>
       <Container maxWidth="xl">
-        <Typography variant="h4" sx={{ mb: 3, fontWeight: 'bold', color: '#1976d2' }}>
+        <Typography variant="h4" sx={{ mb: 3, fontWeight: 'bold', color: 'primary.main' }}>
           Patients Management
         </Typography>
         <Box sx={{ mb: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -76,7 +77,6 @@ export default function Patients() {
               variant="contained"
               color="primary"
               onClick={() => setOpen(true)}
-              sx={{ borderRadius: 2 }}
             >
               Add Patient
             </Button>
@@ -92,23 +92,22 @@ export default function Patients() {
           sx={{
             mb: 3,
             '& .MuiOutlinedInput-root': {
-              borderRadius: 2,
               backgroundColor: 'white',
               '& fieldset': {
-                borderColor: '#1976d2',
+                borderColor: 'primary.main',
               },
               '&:hover fieldset': {
-                borderColor: '#1565c0',
+                borderColor: 'primary.dark',
               },
               '&.Mui-focused fieldset': {
-                borderColor: '#1976d2',
+                borderColor: 'primary.main',
               },
             },
           }}
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
-                <SearchIcon sx={{ color: '#1976d2' }} />
+                <SearchIcon color="primary" />
               </InputAdornment>
             ),
           }}
@@ -135,7 +134,7 @@ export default function Patients() {
                 headerName: 'Date of Birth',
                 flex: 1,
                 valueGetter: (value, row) =>
-                  new Date(row.dob).toLocaleDateString()
+                  new Date(row.dob).toLocaleDateString('en-GB')
               },
               {
                 field: 'uniqueCitizenIdentifier',
@@ -148,7 +147,7 @@ export default function Patients() {
                 headerName: 'Created',
                 flex: 1,
                 valueGetter: (value, row) =>
-                  new Date(row.createdAt).toLocaleDateString()
+                  new Date(row.createdAt).toLocaleDateString('en-GB')
               }
             ]}
             getRowId={(row) => row._id}
@@ -157,8 +156,11 @@ export default function Patients() {
             sx={{
               '& .MuiDataGrid-columnHeaders': {
                 backgroundColor: '#e3f2fd',
-                fontWeight: 'bold',
-                color: '#1976d2'
+                fontWeight: 'bold'
+              },
+              '& .MuiDataGrid-columnHeaderTitle': {
+                color: 'primary.main',
+                fontWeight: 'bold'
               },
               '& .MuiDataGrid-row:hover': {
                 backgroundColor: '#f5f5f5'
@@ -181,8 +183,11 @@ export default function Patients() {
           maxWidth="sm"
           fullWidth
         >
-          <DialogTitle sx={{ bgcolor: '#1976d2', color: 'white' }}>
+          <DialogTitle sx={{ bgcolor: 'primary.main', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             Create Patient
+            <IconButton onClick={() => setOpen(false)} sx={{ color: 'white' }}>
+              <CloseIcon />
+            </IconButton>
           </DialogTitle>
           <DialogContent sx={{ p: 3 }}>
             <TextField

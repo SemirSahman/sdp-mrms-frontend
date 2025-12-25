@@ -12,9 +12,10 @@ import {
   DialogContent,
   TextField,
   DialogActions,
-  InputAdornment
+  InputAdornment,
+  IconButton
 } from '@mui/material';
-import { Search as SearchIcon } from '@mui/icons-material';
+import { Search as SearchIcon, Close as CloseIcon } from '@mui/icons-material';
 import toast from 'react-hot-toast';
 export default function Doctors() {
   const [list, setList] = useState([]);
@@ -68,7 +69,7 @@ export default function Doctors() {
   return (
     <Box sx={{ p: 3, bgcolor: '#f5f5f5', minHeight: '100vh' }}>
       <Container maxWidth="xl">
-        <Typography variant="h4" sx={{ mb: 3, fontWeight: 'bold', color: '#1976d2' }}>
+        <Typography variant="h4" sx={{ mb: 3, fontWeight: 'bold', color: 'primary.main' }}>
           Doctors Management
         </Typography>
         <Box sx={{ mb: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -76,7 +77,6 @@ export default function Doctors() {
             variant="contained"
             color="primary"
             onClick={() => setOpen(true)}
-            sx={{ borderRadius: 2 }}
           >
             Add Doctor
           </Button>
@@ -91,23 +91,22 @@ export default function Doctors() {
           sx={{
             mb: 3,
             '& .MuiOutlinedInput-root': {
-              borderRadius: 2,
               backgroundColor: 'white',
               '& fieldset': {
-                borderColor: '#1976d2',
+                borderColor: 'primary.main',
               },
               '&:hover fieldset': {
-                borderColor: '#1565c0',
+                borderColor: 'primary.dark',
               },
               '&.Mui-focused fieldset': {
-                borderColor: '#1976d2',
+                borderColor: 'primary.main',
               },
             },
           }}
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
-                <SearchIcon sx={{ color: '#1976d2' }} />
+                <SearchIcon color="primary" />
               </InputAdornment>
             ),
           }}
@@ -139,7 +138,7 @@ export default function Doctors() {
                 headerName: 'Created',
                 flex: 1,
                 valueGetter: (value, row) =>
-                  new Date(row.createdAt).toLocaleDateString()
+                  new Date(row.createdAt).toLocaleDateString('en-GB')
               }
             ]}
             getRowId={(row) => row._id}
@@ -148,8 +147,11 @@ export default function Doctors() {
             sx={{
               '& .MuiDataGrid-columnHeaders': {
                 backgroundColor: '#e3f2fd',
-                fontWeight: 'bold',
-                color: '#1976d2'
+                fontWeight: 'bold'
+              },
+              '& .MuiDataGrid-columnHeaderTitle': {
+                color: 'primary.main',
+                fontWeight: 'bold'
               },
               '& .MuiDataGrid-row:hover': {
                 backgroundColor: '#f5f5f5'
@@ -172,8 +174,11 @@ export default function Doctors() {
           maxWidth="sm"
           fullWidth
         >
-          <DialogTitle sx={{ bgcolor: '#1976d2', color: 'white' }}>
+          <DialogTitle sx={{ bgcolor: 'primary.main', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             Create Doctor
+            <IconButton onClick={() => setOpen(false)} sx={{ color: 'white' }}>
+              <CloseIcon />
+            </IconButton>
           </DialogTitle>
           <DialogContent sx={{ p: 3 }}>
             <TextField

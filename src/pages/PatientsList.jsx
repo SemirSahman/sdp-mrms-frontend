@@ -1,7 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import API from '../api/client';
 import { Link } from 'react-router-dom';
-import { Container, Paper, Typography, Table, TableHead, TableRow, TableCell, TableBody, Button, Dialog, DialogTitle, DialogContent, TextField, DialogActions } from '@mui/material';
+import { Container, Paper, Typography, Table, TableHead, TableRow, TableCell, TableBody, Button, Dialog, DialogTitle, DialogContent, TextField, DialogActions, IconButton } from '@mui/material';
+import { Close as CloseIcon } from '@mui/icons-material';
 export default function PatientsList(){
   const [list,setList]=useState([]);
   const [open,setOpen]=useState(false);
@@ -34,7 +35,12 @@ export default function PatientsList(){
         </Table>
       </Paper>
       <Dialog open={open} onClose={()=>setOpen(false)}>
-        <DialogTitle>Create Patient</DialogTitle>
+        <DialogTitle sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          Create Patient
+          <IconButton onClick={()=>setOpen(false)} size="small">
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
         <DialogContent>
           <TextField label='Full name' value={form.name} onChange={e=>setForm({...form,name:e.target.value})} fullWidth sx={{mt:1}}/>
           <TextField label='Email' value={form.email} onChange={e=>setForm({...form,email:e.target.value})} fullWidth sx={{mt:1}}/>

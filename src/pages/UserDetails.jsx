@@ -14,8 +14,10 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  Alert
+  Alert,
+  IconButton
 } from '@mui/material';
+import { Close as CloseIcon } from '@mui/icons-material';
 import { useParams, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
@@ -68,7 +70,7 @@ export default function UserDetails() {
   return (
     <Box sx={{ p: 3, bgcolor: '#f5f5f5', minHeight: '100vh' }}>
       <Container maxWidth="md">
-        <Typography variant="h4" sx={{ mb: 3, fontWeight: 'bold', color: '#1976d2' }}>
+        <Typography variant="h4" sx={{ mb: 3, fontWeight: 'bold', color: 'primary.main' }}>
           User Details
         </Typography>
 
@@ -134,12 +136,17 @@ export default function UserDetails() {
           </Box>
 
           <Alert severity="info">
-            Created: {new Date(user.createdAt).toLocaleString()}
+            Created: {new Date(user.createdAt).toLocaleDateString('en-GB')}
           </Alert>
         </Paper>
 
         <Dialog open={confirmOpen} onClose={() => setConfirmOpen(false)}>
-          <DialogTitle>Confirm Action</DialogTitle>
+          <DialogTitle sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            Confirm Action
+            <IconButton onClick={() => setConfirmOpen(false)} size="small">
+              <CloseIcon />
+            </IconButton>
+          </DialogTitle>
           <DialogContent>
             <Typography>
               Are you sure you want to {form.active ? 'deactivate' : 'activate'} this user?

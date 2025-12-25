@@ -9,10 +9,11 @@ import {
   Autocomplete,
   Typography,
   InputAdornment,
-  Container
+  Container,
+  IconButton
 } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
-import { Search as SearchIcon } from '@mui/icons-material';
+import { Search as SearchIcon, Close as CloseIcon } from '@mui/icons-material';
 import toast from 'react-hot-toast';
 import { fetchRecords, createRecord } from '../api/records';
 import { fetchPatients } from '../api/patients';
@@ -76,7 +77,7 @@ export default function Records() {
     <>
       <Box sx={{ p: 3, bgcolor: '#f5f5f5', minHeight: '100vh' }}>
         <Container maxWidth="xl">
-          <Typography variant="h4" sx={{ mb: 3, fontWeight: 'bold', color: '#1976d2' }}>
+          <Typography variant="h4" sx={{ mb: 3, fontWeight: 'bold', color: 'primary.main' }}>
             Medical Records
           </Typography>
         <Box sx={{ mb: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -85,7 +86,6 @@ export default function Records() {
               variant="contained"
               color="primary"
               onClick={() => setOpen(true)}
-              sx={{ borderRadius: 2 }}
             >
               Add Record
             </Button>
@@ -101,23 +101,22 @@ export default function Records() {
           sx={{
             mb: 3,
             '& .MuiOutlinedInput-root': {
-              borderRadius: 2,
               backgroundColor: 'white',
               '& fieldset': {
-                borderColor: '#1976d2',
+                borderColor: 'primary.main',
               },
               '&:hover fieldset': {
-                borderColor: '#1565c0',
+                borderColor: 'primary.dark',
               },
               '&.Mui-focused fieldset': {
-                borderColor: '#1976d2',
+                borderColor: 'primary.main',
               },
             },
           }}
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
-                <SearchIcon sx={{ color: '#1976d2' }} />
+                <SearchIcon color="primary" />
               </InputAdornment>
             ),
           }}
@@ -144,7 +143,7 @@ export default function Records() {
                   <a
                     href={`http://localhost:4000${p.value}`}
                     target="_blank"
-                    style={{ color: '#1976d2', textDecoration: 'none', fontWeight: 'bold' }}
+                    style={{ color: 'inherit', textDecoration: 'none', fontWeight: 'bold' }}
                   >
                     {p.value.split('/').pop()}
                   </a>
@@ -156,8 +155,11 @@ export default function Records() {
           sx={{
             '& .MuiDataGrid-columnHeaders': {
               backgroundColor: '#e3f2fd',
-              fontWeight: 'bold',
-              color: '#1976d2'
+              fontWeight: 'bold'
+            },
+            '& .MuiDataGrid-columnHeaderTitle': {
+              color: 'primary.main',
+              fontWeight: 'bold'
             },
             '& .MuiDataGrid-row:hover': {
               backgroundColor: '#f5f5f5'
@@ -180,8 +182,11 @@ export default function Records() {
         maxWidth="sm"
         fullWidth
       >
-        <DialogTitle sx={{ bgcolor: '#1976d2', color: 'white' }}>
+        <DialogTitle sx={{ bgcolor: 'primary.main', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           New Medical Record
+          <IconButton onClick={() => setOpen(false)} sx={{ color: 'white' }}>
+            <CloseIcon />
+          </IconButton>
         </DialogTitle>
         <DialogContent sx={{ p: 3 }}>
           <TextField

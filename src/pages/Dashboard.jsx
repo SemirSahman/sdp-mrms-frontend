@@ -1,17 +1,29 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Grid, Paper, Typography, Box, Button, List, ListItem, ListItemText } from '@mui/material';
+import { Container, Grid, Paper, Typography, Box, Button, List, ListItem, ListItemText, Card, CardContent, Chip, Divider } from '@mui/material';
 import { BarChart, PieChart, LineChart } from '@mui/x-charts';
 import { Link } from 'react-router-dom';
 import API from '../api/client';
 import { isAdmin, isDoctor, isPatient } from '../utils/auth';
+import { People as PeopleIcon, LocalHospital as HospitalIcon, Assignment as AssignmentIcon, Event as EventIcon, TrendingUp as TrendingUpIcon } from '@mui/icons-material';
 
-const StatCard = ({ title, value }) => (
-  <Paper sx={{ p: 3 }}>
-    <Typography variant="h6" color="text.secondary">
-      {title}
-    </Typography>
-    <Typography variant="h4">{value}</Typography>
-  </Paper>
+const StatCard = ({ title, value, icon: Icon, color = 'primary' }) => (
+  <Card sx={{ boxShadow: 3, height: '100%', bgcolor: (theme) => theme.palette.custom.cardBackground }}>
+    <CardContent sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      <Box>
+        <Typography variant="body2" color="text.secondary" sx={{ mb: 1, fontWeight: 500 }}>
+          {title}
+        </Typography>
+        <Typography variant="h3" sx={{ fontWeight: 700, color: `${color}.main` }}>
+          {value}
+        </Typography>
+      </Box>
+      {Icon && (
+        <Box sx={{ bgcolor: `${color}.main`, p: 2, borderRadius: 2 }}>
+          <Icon sx={{ fontSize: 40, color: 'white' }} />
+        </Box>
+      )}
+    </CardContent>
+  </Card>
 );
 
 export default function Dashboard() {
@@ -36,9 +48,9 @@ export default function Dashboard() {
   if (!isAdmin() && !appointments) return <Typography>Loading...</Typography>;
 
   return (
-    <Box sx={{ p: 3, bgcolor: '#f5f5f5', minHeight: '100vh' }}>
+    <Box sx={{ p: 3, bgcolor: (theme) => theme.palette.custom.pageBackground, minHeight: '100vh' }}>
       <Container maxWidth="xl">
-        <Typography variant="h4" sx={{ mb: 3, color: '#1976d2' }}>
+        <Typography variant="h4" sx={{ mb: 3, color: 'primary.main', fontWeight: 600 }}>
           {isAdmin() ? 'System Overview' : isDoctor() ? 'Doctor Dashboard' : 'Patient Dashboard'}
         </Typography>
 
@@ -46,52 +58,24 @@ export default function Dashboard() {
           <>
             {/* KPI CARDS */}
             <Grid container spacing={3}>
-              <Grid item xs={12} md={3}>
-                <Paper sx={{ p: 3, boxShadow: 2, bgcolor: 'white' }}>
-                  <Typography variant="h6" color="text.secondary">
-                    Doctors
-                  </Typography>
-                  <Typography variant="h4" color="primary">
-                    {data.doctors}
-                  </Typography>
-                </Paper>
+              <Grid item xs={12} sm={6} md={3}>
+                <StatCard title="Total Doctors" value={data.doctors} icon={HospitalIcon} color="primary" />
               </Grid>
-              <Grid item xs={12} md={3}>
-                <Paper sx={{ p: 3, boxShadow: 2, bgcolor: 'white' }}>
-                  <Typography variant="h6" color="text.secondary">
-                    Patients
-                  </Typography>
-                  <Typography variant="h4" color="primary">
-                    {data.patients}
-                  </Typography>
-                </Paper>
+              <Grid item xs={12} sm={6} md={3}>
+                <StatCard title="Total Patients" value={data.patients} icon={PeopleIcon} color="secondary" />
               </Grid>
-              <Grid item xs={12} md={3}>
-                <Paper sx={{ p: 3, boxShadow: 2, bgcolor: 'white' }}>
-                  <Typography variant="h6" color="text.secondary">
-                    Records
-                  </Typography>
-                  <Typography variant="h4" color="primary">
-                    {data.records}
-                  </Typography>
-                </Paper>
+              <Grid item xs={12} sm={6} md={3}>
+                <StatCard title="Medical Records" value={data.records} icon={AssignmentIcon} color="primary" />
               </Grid>
-              <Grid item xs={12} md={3}>
-                <Paper sx={{ p: 3, boxShadow: 2, bgcolor: 'white' }}>
-                  <Typography variant="h6" color="text.secondary">
-                    Appointments
-                  </Typography>
-                  <Typography variant="h4" color="primary">
-                    {data.appointments}
-                  </Typography>
-                </Paper>
+              <Grid item xs={12} sm={6} md={3}>
+                <StatCard title="Appointments" value={data.appointments} icon={EventIcon} color="secondary" />
               </Grid>
             </Grid>
 
             {/* CHARTS */}
             <Grid container spacing={3} sx={{ mt: 1 }}>
               <Grid item xs={12} md={6}>
-                <Paper sx={{ p: 3, boxShadow: 2, bgcolor: 'white' }}>
+                <Paper sx={{ p: 3, boxShadow: 2, bgcolor: (theme) => theme.palette.custom.cardBackground }}>
                   <Typography variant="h6" sx={{ mb: 2 }}>
                     Appointments per Month
                   </Typography>
@@ -111,7 +95,7 @@ export default function Dashboard() {
               </Grid>
 
               <Grid item xs={12} md={6}>
-                <Paper sx={{ p: 3, boxShadow: 2, bgcolor: 'white' }}>
+                <Paper sx={{ p: 3, boxShadow: 2, bgcolor: (theme) => theme.palette.custom.cardBackground }}>
                   <Typography variant="h6" sx={{ mb: 2 }}>
                     Records by Type
                   </Typography>
@@ -130,7 +114,7 @@ export default function Dashboard() {
             {/* LINE CHART */}
             <Grid container spacing={3} sx={{ mt: 1 }}>
               <Grid item xs={12}>
-                <Paper sx={{ p: 3, boxShadow: 2, bgcolor: 'white' }}>
+                <Paper sx={{ p: 3, boxShadow: 2, bgcolor: (theme) => theme.palette.custom.cardBackground }}>
                   <Typography variant="h6" sx={{ mb: 2 }}>
                     System Growth
                   </Typography>
@@ -146,7 +130,7 @@ export default function Dashboard() {
             {/* Quick Actions for Admin */}
             <Grid container spacing={3} sx={{ mt: 1 }}>
               <Grid item xs={12} md={4}>
-                <Paper sx={{ p: 3, boxShadow: 2, bgcolor: 'white' }}>
+                <Paper sx={{ p: 3, boxShadow: 2, bgcolor: (theme) => theme.palette.custom.cardBackground }}>
                   <Typography variant="h6" sx={{ mb: 2 }}>
                     Manage Users
                   </Typography>
@@ -159,7 +143,7 @@ export default function Dashboard() {
                 </Paper>
               </Grid>
               <Grid item xs={12} md={4}>
-                <Paper sx={{ p: 3, boxShadow: 2, bgcolor: 'white' }}>
+                <Paper sx={{ p: 3, boxShadow: 2, bgcolor: (theme) => theme.palette.custom.cardBackground }}>
                   <Typography variant="h6" sx={{ mb: 2 }}>
                     View Patients
                   </Typography>
@@ -172,7 +156,7 @@ export default function Dashboard() {
                 </Paper>
               </Grid>
               <Grid item xs={12} md={4}>
-                <Paper sx={{ p: 3, boxShadow: 2, bgcolor: 'white' }}>
+                <Paper sx={{ p: 3, boxShadow: 2, bgcolor: (theme) => theme.palette.custom.cardBackground }}>
                   <Typography variant="h6" sx={{ mb: 2 }}>
                     System Reports
                   </Typography>
@@ -190,20 +174,84 @@ export default function Dashboard() {
 
         {(isDoctor() || isPatient()) && (
           <>
+            {/* Stats Overview */}
+            <Grid container spacing={3} sx={{ mb: 3 }}>
+              <Grid item xs={12} sm={6} md={4}>
+                <Card sx={{ boxShadow: 3, bgcolor: (theme) => theme.palette.custom.cardBackground }}>
+                  <CardContent>
+                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                      <EventIcon sx={{ fontSize: 30, color: 'primary.main', mr: 1 }} />
+                      <Typography variant="h6" color="primary.main">Appointments</Typography>
+                    </Box>
+                    <Typography variant="h4" sx={{ fontWeight: 700 }}>{appointments.length}</Typography>
+                    <Typography variant="body2" color="text.secondary">Total Scheduled</Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+              <Grid item xs={12} sm={6} md={4}>
+                <Card sx={{ boxShadow: 3, bgcolor: (theme) => theme.palette.custom.cardBackground }}>
+                  <CardContent>
+                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                      <TrendingUpIcon sx={{ fontSize: 30, color: 'secondary.main', mr: 1 }} />
+                      <Typography variant="h6" color="secondary.main">Upcoming</Typography>
+                    </Box>
+                    <Typography variant="h4" sx={{ fontWeight: 700 }}>{upcomingAppointments.length}</Typography>
+                    <Typography variant="body2" color="text.secondary">Future Appointments</Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+              <Grid item xs={12} sm={6} md={4}>
+                <Card sx={{ boxShadow: 3, bgcolor: (theme) => theme.palette.custom.cardBackground }}>
+                  <CardContent>
+                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                      <AssignmentIcon sx={{ fontSize: 30, color: 'primary.main', mr: 1 }} />
+                      <Typography variant="h6" color="primary.main">Records</Typography>
+                    </Box>
+                    <Typography variant="h4" sx={{ fontWeight: 700 }}>{records.length}</Typography>
+                    <Typography variant="body2" color="text.secondary">Medical Records</Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+            </Grid>
+
             {/* Upcoming Appointments */}
-            <Paper sx={{ p: 3, boxShadow: 2, bgcolor: 'white', mb: 3 }}>
-              <Typography variant="h5" sx={{ mb: 2, color: '#1976d2' }}>
+            <Paper sx={{ p: 3, boxShadow: 3, bgcolor: (theme) => theme.palette.custom.cardBackground, mb: 3 }}>
+              <Typography variant="h5" sx={{ mb: 2, color: 'primary.main', fontWeight: 600, display: 'flex', alignItems: 'center' }}>
+                <EventIcon sx={{ mr: 1 }} />
                 Upcoming Appointments
               </Typography>
+              <Divider sx={{ mb: 2 }} />
               {upcomingAppointments.length === 0 ? (
-                <Typography>No upcoming appointments.</Typography>
+                <Box sx={{ textAlign: 'center', py: 4 }}>
+                  <EventIcon sx={{ fontSize: 60, color: 'text.secondary', mb: 2 }} />
+                  <Typography color="text.secondary">No upcoming appointments.</Typography>
+                </Box>
               ) : (
                 <List>
                   {upcomingAppointments.slice(0, 5).map((a) => (
-                    <ListItem key={a._id} sx={{ borderBottom: '1px solid #e0e0e0' }}>
+                    <ListItem 
+                      key={a._id} 
+                      sx={{ 
+                        borderBottom: '1px solid #e0e0e0',
+                        '&:hover': { bgcolor: 'rgba(0,0,0,0.02)' },
+                        borderRadius: 1,
+                        mb: 1
+                      }}
+                    >
                       <ListItemText
-                        primary={`${new Date(a.slot).toLocaleString()} - ${isDoctor() ? `Patient: ${a.patient?.user?.name || 'Unknown'}` : `Dr. ${a.doctor?.user?.name || 'Unknown'}`}`}
-                        secondary={`Status: ${a.status}`}
+                        primary={
+                          <Typography sx={{ fontWeight: 500 }}>
+                            {a.date ? `${a.date.split('-').reverse().join('/')} at ${a.hour}:00` : new Date(a.slot).toLocaleDateString('en-GB')} - {isDoctor() ? `Patient: ${a.patient?.user?.name || 'Unknown'}` : `Dr. ${a.doctor?.user?.name || 'Unknown'}`}
+                          </Typography>
+                        }
+                        secondary={
+                          <Chip 
+                            label={a.status} 
+                            size="small" 
+                            color={a.status === 'confirmed' ? 'success' : 'default'}
+                            sx={{ mt: 0.5 }}
+                          />
+                        }
                       />
                     </ListItem>
                   ))}
@@ -217,18 +265,35 @@ export default function Dashboard() {
             </Paper>
 
             {/* Recent Records */}
-            <Paper sx={{ p: 3, boxShadow: 2, bgcolor: 'white', mb: 3 }}>
-              <Typography variant="h5" sx={{ mb: 2, color: '#1976d2' }}>
+            <Paper sx={{ p: 3, boxShadow: 3, bgcolor: (theme) => theme.palette.custom.cardBackground, mb: 3 }}>
+              <Typography variant="h5" sx={{ mb: 2, color: 'primary.main', fontWeight: 600, display: 'flex', alignItems: 'center' }}>
+                <AssignmentIcon sx={{ mr: 1 }} />
                 Recent Medical Records
               </Typography>
+              <Divider sx={{ mb: 2 }} />
               {recentRecords.length === 0 ? (
-                <Typography>No recent records.</Typography>
+                <Box sx={{ textAlign: 'center', py: 4 }}>
+                  <AssignmentIcon sx={{ fontSize: 60, color: 'text.secondary', mb: 2 }} />
+                  <Typography color="text.secondary">No recent records.</Typography>
+                </Box>
               ) : (
                 <List>
                   {recentRecords.map((r) => (
-                    <ListItem key={r._id} sx={{ borderBottom: '1px solid #e0e0e0' }}>
+                    <ListItem 
+                      key={r._id} 
+                      sx={{ 
+                        borderBottom: '1px solid #e0e0e0',
+                        '&:hover': { bgcolor: 'rgba(0,0,0,0.02)' },
+                        borderRadius: 1,
+                        mb: 1
+                      }}
+                    >
                       <ListItemText
-                        primary={`${r.title} - ${new Date(r.createdAt).toLocaleDateString()}`}
+                        primary={
+                          <Typography sx={{ fontWeight: 500 }}>
+                            {r.title} - {new Date(r.createdAt).toLocaleDateString('en-GB')}
+                          </Typography>
+                        }
                         secondary={`Patient: ${r.patient?.user?.name || 'Unknown'} | Doctor: ${r.doctor?.user?.name || 'Unknown'}`}
                       />
                     </ListItem>
@@ -238,47 +303,59 @@ export default function Dashboard() {
             </Paper>
 
             {/* Quick Actions */}
+            <Typography variant="h5" sx={{ mb: 2, color: 'primary.main', fontWeight: 600 }}>
+              Quick Actions
+            </Typography>
             <Grid container spacing={3}>
               {isPatient() && (
-                <Grid item xs={12} md={6}>
-                  <Paper sx={{ p: 3, boxShadow: 2, bgcolor: 'white' }}>
-                    <Typography variant="h6" sx={{ mb: 2 }}>
-                      Book New Appointment
-                    </Typography>
-                    <Typography variant="body2" sx={{ mb: 2 }}>
-                      Schedule an appointment with one of our doctors.
-                    </Typography>
-                    <Button variant="contained" component={Link} to="/appointments">
-                      Book Appointment
-                    </Button>
-                  </Paper>
+                <Grid item xs={12} md={4}>
+                  <Card sx={{ boxShadow: 3, bgcolor: (theme) => theme.palette.custom.cardBackground, height: '100%' }}>
+                    <CardContent>
+                      <EventIcon sx={{ fontSize: 40, color: 'primary.main', mb: 2 }} />
+                      <Typography variant="h6" sx={{ mb: 1, fontWeight: 600 }}>
+                        Book New Appointment
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                        Schedule an appointment with one of our doctors.
+                      </Typography>
+                      <Button variant="contained" fullWidth component={Link} to="/appointments">
+                        Book Appointment
+                      </Button>
+                    </CardContent>
+                  </Card>
                 </Grid>
               )}
-              <Grid item xs={12} md={6}>
-                <Paper sx={{ p: 3, boxShadow: 2, bgcolor: 'white' }}>
-                  <Typography variant="h6" sx={{ mb: 2 }}>
-                    View All Appointments
-                  </Typography>
-                  <Typography variant="body2" sx={{ mb: 2 }}>
-                    See all your appointments and manage them.
-                  </Typography>
-                  <Button variant="outlined" component={Link} to="/appointments">
-                    View Appointments
-                  </Button>
-                </Paper>
+              <Grid item xs={12} md={4}>
+                <Card sx={{ boxShadow: 3, bgcolor: (theme) => theme.palette.custom.cardBackground, height: '100%' }}>
+                  <CardContent>
+                    <EventIcon sx={{ fontSize: 40, color: 'secondary.main', mb: 2 }} />
+                    <Typography variant="h6" sx={{ mb: 1, fontWeight: 600 }}>
+                      View All Appointments
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                      See all your appointments and manage them.
+                    </Typography>
+                    <Button variant="outlined" fullWidth component={Link} to="/appointments">
+                      View Appointments
+                    </Button>
+                  </CardContent>
+                </Card>
               </Grid>
-              <Grid item xs={12} md={6}>
-                <Paper sx={{ p: 3, boxShadow: 2, bgcolor: 'white' }}>
-                  <Typography variant="h6" sx={{ mb: 2 }}>
-                    Medical Records
-                  </Typography>
-                  <Typography variant="body2" sx={{ mb: 2 }}>
-                    Access your medical history and records.
-                  </Typography>
-                  <Button variant="outlined" component={Link} to="/records">
-                    View Records
-                  </Button>
-                </Paper>
+              <Grid item xs={12} md={4}>
+                <Card sx={{ boxShadow: 3, bgcolor: (theme) => theme.palette.custom.cardBackground, height: '100%' }}>
+                  <CardContent>
+                    <AssignmentIcon sx={{ fontSize: 40, color: 'primary.main', mb: 2 }} />
+                    <Typography variant="h6" sx={{ mb: 1, fontWeight: 600 }}>
+                      Medical Records
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                      Access your medical history and records.
+                    </Typography>
+                    <Button variant="outlined" fullWidth component={Link} to="/records">
+                      View Records
+                    </Button>
+                  </CardContent>
+                </Card>
               </Grid>
             </Grid>
           </>

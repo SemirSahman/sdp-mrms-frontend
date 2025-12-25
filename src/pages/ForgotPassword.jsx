@@ -32,7 +32,7 @@ export default function ForgotPassword() {
     <Box sx={{ p: 3, bgcolor: '#f5f5f5', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <Container maxWidth="sm">
         <Paper sx={{ p: 4, boxShadow: 2, bgcolor: 'white' }}>
-          <Typography variant="h4" sx={{ mb: 3, textAlign: 'center', color: '#1976d2' }}>
+          <Typography variant="h4" sx={{ mb: 3, textAlign: 'center', color: 'primary.main', fontWeight: 600 }}>
             Forgot Password
           </Typography>
           <Typography sx={{ mb: 3, textAlign: 'center' }}>

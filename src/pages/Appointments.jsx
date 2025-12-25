@@ -14,12 +14,14 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogActions
+  DialogActions,
+  IconButton
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { Close as CloseIcon } from '@mui/icons-material';
 import dayjs from 'dayjs';
 import toast from 'react-hot-toast';
 export default function Appointments() {
@@ -35,7 +37,13 @@ export default function Appointments() {
   const [availableTimes, setAvailableTimes] = useState([]);
   useEffect(() => {
     API.get('/appointments/my')
-      .then((r) => setList(r.data))
+      .then((r) =>
+        setList(
+          [...r.data].sort(
+            (a, b) => new Date(b.slot).getTime() - new Date(a.slot).getTime()
+          )
+        )
+      )
       .catch(() => {});
     API.get('/doctors')
       .then((r) => setDoctors(r.data))
@@ -68,11 +76,23 @@ export default function Appointments() {
 
     const slotDateTime = selectedDate
       .hour(selectedTime.hour())
-      .minute(selectedTime.minute());
+      .minute(0)
+      .second(0);
+
+    // Send local time string with clean hour boundary (HH:00:00)
+    const slotString = slotDateTime.format('YYYY-MM-DDTHH:mm:ss');
+
+    const selectedHour = selectedTime.hour();
+    const isAvailable = availableTimes.some((t) => Number(t) === selectedHour);
+    if (!isAvailable) {
+      toast.error('This time is no longer available. Please pick another slot.');
+      fetchAvailableTimes();
+      return;
+    }
     try {
       await API.post('/appointments/book', {
         doctorId,
-        slot: slotDateTime.toISOString()
+        slot: slotString
       });
       toast.success('Appointment booked successfully!');
       setTimeout(() => window.location.reload(), 1000);
@@ -96,14 +116,16 @@ export default function Appointments() {
     setCancelId(id);
     setConfirmOpen(true);
   };
+  const isTimeAvailable = (hour) => availableTimes.some((t) => Number(t) === hour);
+
   return (
     <Box sx={{ p: 3, bgcolor: '#f5f5f5', minHeight: '100vh' }}>
       <Container maxWidth="xl">
-        <Typography variant="h4" sx={{ mb: 3, fontWeight: 'bold', color: '#1976d2' }}>
+        <Typography variant="h4" sx={{ mb: 3, fontWeight: 'bold', color: 'primary.main' }}>
           Appointments
         </Typography>
         <Paper sx={{ p: 3, boxShadow: 2, bgcolor: 'white', mb: 3 }}>
-          <Typography variant="h5" sx={{ mb: 2, color: '#1976d2' }}>
+          <Typography variant="h5" sx={{ mb: 2, color: 'primary.main' }}>
             My Appointments
           </Typography>
           <Box sx={{ maxHeight: 300, overflow: 'auto' }}>
@@ -111,7 +133,7 @@ export default function Appointments() {
               {list.map((a) => (
                 <ListItem key={a._id} sx={{ borderBottom: '1px solid #e0e0e0' }}>
                   <ListItemText
-                    primary={`${new Date(a.slot).toLocaleString()} - Dr. ${a.doctor?.user?.name || 'Unknown'}`}
+                    primary={`${a.date.split('-').reverse().join('/')} at ${a.hour}:00 - Dr. ${a.doctor?.user?.name || 'Unknown'}`}
                     secondary={`Status: ${a.status}`}
                   />
                   <Button
@@ -130,7 +152,7 @@ export default function Appointments() {
         </Paper>
 
         <Paper sx={{ p: 3, boxShadow: 2, bgcolor: 'white' }}>
-          <Typography sx={{ mb: 2 }} variant="h5" sx={{ color: '#1976d2' }}>
+          <Typography variant="h5" sx={{ mb: 2, color: 'primary.main' }}>
             Book New Appointment
           </Typography>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -170,9 +192,9 @@ export default function Appointments() {
                         ? 'contained'
                         : 'outlined'
                     }
-                    disabled={!availableTimes.includes(hour)}
+                    disabled={!isTimeAvailable(hour)}
                     onClick={() =>
-                      setSelectedTime(dayjs().hour(hour).minute(0))
+                      setSelectedTime(selectedDate ? selectedDate.hour(hour).minute(0).second(0) : dayjs().hour(hour).minute(0).second(0))
                     }
                   >
                     {hour}:00
@@ -191,7 +213,12 @@ export default function Appointments() {
       </Container>
 
       <Dialog open={confirmOpen} onClose={() => setConfirmOpen(false)}>
-        <DialogTitle>Confirm Cancellation</DialogTitle>
+        <DialogTitle sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          Confirm Cancellation
+          <IconButton onClick={() => setConfirmOpen(false)} size="small">
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
         <DialogContent>
           <Typography>
             Are you sure you want to cancel this appointment?

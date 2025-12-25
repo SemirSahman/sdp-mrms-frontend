@@ -36,7 +36,7 @@ export default function Login() {
         minHeight: '100vh',
         display: 'flex',
         alignItems: 'center',
-        background: 'linear-gradient(135deg,#1976d2,#42a5f5)'
+        background: (theme) => theme.palette.custom.pageBackground
       }}
     >
       <Container maxWidth="sm">

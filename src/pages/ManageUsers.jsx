@@ -93,7 +93,7 @@ export default function ManageUsers() {
   return (
     <Box sx={{ p: 3, bgcolor: '#f5f5f5', minHeight: '100vh' }}>
       <Container maxWidth="xl">
-        <Typography variant="h4" sx={{ mb: 3, fontWeight: 'bold', color: '#1976d2' }}>
+        <Typography variant="h4" sx={{ mb: 3, fontWeight: 'bold', color: 'primary.main' }}>
           Manage Users
         </Typography>
 
@@ -107,7 +107,7 @@ export default function ManageUsers() {
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
-                  <SearchIcon sx={{ color: '#1976d2' }} />
+                  <SearchIcon color="primary" />
                 </InputAdornment>
               ),
             }}
@@ -136,8 +136,11 @@ export default function ManageUsers() {
             sx={{
               '& .MuiDataGrid-columnHeaders': {
                 backgroundColor: '#e3f2fd',
-                fontWeight: 'bold',
-                color: '#1976d2'
+                fontWeight: 'bold'
+              },
+              '& .MuiDataGrid-columnHeaderTitle': {
+                color: 'primary.main',
+                fontWeight: 'bold'
               },
               '& .MuiDataGrid-row:hover': {
                 backgroundColor: '#f5f5f5'

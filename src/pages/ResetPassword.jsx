@@ -42,7 +42,7 @@ export default function ResetPassword() {
       <Box sx={{ p: 3, bgcolor: '#f5f5f5', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <Container maxWidth="sm">
           <Paper sx={{ p: 4, boxShadow: 2, bgcolor: 'white' }}>
-            <Typography variant="h4" sx={{ mb: 3, textAlign: 'center', color: '#1976d2' }}>
+            <Typography variant="h4" sx={{ mb: 3, textAlign: 'center', color: 'primary.main' }}>
               Invalid Reset Link
             </Typography>
             <Typography sx={{ textAlign: 'center' }}>
@@ -63,7 +63,7 @@ export default function ResetPassword() {
     <Box sx={{ p: 3, bgcolor: '#f5f5f5', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <Container maxWidth="sm">
         <Paper sx={{ p: 4, boxShadow: 2, bgcolor: 'white' }}>
-          <Typography variant="h4" sx={{ mb: 3, textAlign: 'center', color: '#1976d2' }}>
+          <Typography variant="h4" sx={{ mb: 3, textAlign: 'center', color: 'primary.main' }}>
             Reset Password
           </Typography>
           <form onSubmit={handleSubmit}>

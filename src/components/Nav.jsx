@@ -45,12 +45,13 @@ export default function Nav() {
       startIcon={<Icon />}
       color="inherit"
       sx={{
-        mx: 1,
-        borderBottom:
-          location.pathname === to ? '2px solid #fff' : 'none',
+        mx: 0.5,
+        px: 2,
         borderRadius: 0,
+        borderBottom:
+          location.pathname === to ? '2px solid #fff' : '2px solid transparent',
         '&:hover': {
-          backgroundColor: 'rgba(255, 255, 255, 0.1)',
+          backgroundColor: (theme) => theme.palette.custom.navHover,
         }
       }}
     >
@@ -59,14 +60,17 @@ export default function Nav() {
   );
 
   return (
-    <AppBar 
-      position="static" 
-      sx={{ 
-        background: '#b4b8bbff',
-        boxShadow: '0 3px 5px 2px rgba(33, 203, 243, .3)',
-      }}
-    >
-      <Toolbar>
+    <>
+      <AppBar 
+        position="fixed" 
+        sx={{ 
+          background: (theme) => theme.palette.custom.navBackground,
+          boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+          borderRadius: 0,
+          zIndex: (theme) => theme.zIndex.drawer + 1
+        }}
+      >
+        <Toolbar>
         {navBtn('/', 'Dashboard', DashboardIcon)}
 
         {/* ADMIN */}
@@ -90,14 +94,16 @@ export default function Nav() {
               alignItems: 'center', 
               mr: 1, 
               cursor: 'pointer',
+              px: 1.5,
+              py: 0.5,
+              borderRadius: 2,
               '&:hover': {
-                backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                borderRadius: 1
+                backgroundColor: (theme) => theme.palette.custom.navHover,
               }
             }}
             onClick={handleMenu}
           >
-            <Typography variant="body1" sx={{ color: 'white', mr: 1 }}>
+            <Typography variant="body1" sx={{ color: 'white', mr: 1, fontWeight: 500 }}>
               {getName() || 'User'}
             </Typography>
             <AccountCircle />
@@ -106,12 +112,12 @@ export default function Nav() {
             id="menu-appbar"
             anchorEl={anchorEl}
             anchorOrigin={{
-              vertical: 'top',
+              vertical: 'bottom',
               horizontal: 'right',
             }}
             keepMounted
             transformOrigin={{
-              vertical: 'down',
+              vertical: 'top',
               horizontal: 'right',
             }}
             open={Boolean(anchorEl)}
@@ -127,7 +133,9 @@ export default function Nav() {
             </MenuItem>
           </Menu>
         </div>
-      </Toolbar>
-    </AppBar>
+        </Toolbar>
+      </AppBar>
+      <Toolbar />
+    </>
   );
 }
