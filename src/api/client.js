@@ -30,4 +30,11 @@ API.interceptors.response.use(
   }
 );
 
+// Export the base URL for use in components
+export const getBaseUrl = () => {
+  const apiUrl = getApiUrl();
+  // Remove /api suffix if present to get base URL
+  return apiUrl.replace(/\/api$/, '');
+};
+
 export default API;

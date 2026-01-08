@@ -18,6 +18,7 @@ import toast from 'react-hot-toast';
 import { fetchRecords, createRecord } from '../api/records';
 import { fetchPatients } from '../api/patients';
 import { isDoctor, isAdmin } from '../utils/auth';
+import { getBaseUrl } from '../api/client';
 
 export default function Records() {
   const [rows, setRows] = useState([]);
@@ -141,7 +142,7 @@ export default function Records() {
               renderCell: (p) =>
                 p.value ? (
                   <a
-                    href={`http://localhost:4000${p.value}`}
+                    href={`${getBaseUrl()}${p.value}`}
                     target="_blank"
                     style={{ color: 'inherit', textDecoration: 'none', fontWeight: 'bold' }}
                   >
