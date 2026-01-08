@@ -1,14 +1,12 @@
 import axios from 'axios';
 
+// Vite injects import.meta.env.* at build time; fall back to process.env for tests
 const getApiUrl = () => {
-  try {
-    // Use eval to prevent Jest from parsing import.meta at compile time
-    const meta = eval('import.meta');
-    return meta?.env?.VITE_API_URL || 'http://localhost:4000/api';
-  } catch (e) {
-    // Fall back for Jest environment
-    return process.env.VITE_API_URL || 'http://localhost:4000/api';
-  }
+  return (
+    (typeof import.meta !== 'undefined' ? import.meta.env?.VITE_API_URL : undefined) ||
+    process.env.VITE_API_URL ||
+    'http://localhost:4000/api'
+  );
 };
 
 const API = axios.create({ baseURL: getApiUrl() });
