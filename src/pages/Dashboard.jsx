@@ -1,15 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Grid, Paper, Typography, Box, Button, List, ListItem, ListItemText, Card, CardContent, Chip, Divider } from '@mui/material';
+import { Container, Grid, Paper, Typography, Box, Button, List, ListItem, ListItemText, Card, CardContent, Chip, Divider, useMediaQuery } from '@mui/material';
 import { BarChart, PieChart, LineChart } from '@mui/x-charts';
 import { Link } from 'react-router-dom';
+import { useTheme } from '@mui/material/styles';
 import API from '../api/client';
 import { isAdmin, isDoctor, isPatient } from '../utils/auth';
 import { People as PeopleIcon, LocalHospital as HospitalIcon, Assignment as AssignmentIcon, Event as EventIcon, TrendingUp as TrendingUpIcon } from '@mui/icons-material';
 
 const StatCard = ({ title, value, icon: Icon, color = 'primary' }) => (
-  <Card sx={{ boxShadow: 3, height: '100%', bgcolor: (theme) => theme.palette.custom.cardBackground }}>
-    <CardContent sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-      <Box>
+  <Card sx={{ boxShadow: 3, height: '100%', width: '100%', bgcolor: (theme) => theme.palette.custom.cardBackground }}>
+    <CardContent sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', textAlign: 'center', gap: 2, py: 3 }}>
+      {Icon && (
+        <Box sx={{ bgcolor: `${color}.main`, p: 2, borderRadius: 2 }}>
+          <Icon sx={{ fontSize: 40, color: 'white' }} />
+        </Box>
+      )}
+      <Box sx={{ width: '100%' }}>
         <Typography variant="body2" color="text.secondary" sx={{ mb: 1, fontWeight: 500 }}>
           {title}
         </Typography>
@@ -17,11 +23,6 @@ const StatCard = ({ title, value, icon: Icon, color = 'primary' }) => (
           {value}
         </Typography>
       </Box>
-      {Icon && (
-        <Box sx={{ bgcolor: `${color}.main`, p: 2, borderRadius: 2 }}>
-          <Icon sx={{ fontSize: 40, color: 'white' }} />
-        </Box>
-      )}
     </CardContent>
   </Card>
 );
@@ -30,6 +31,8 @@ export default function Dashboard() {
   const [data, setData] = useState(null);
   const [appointments, setAppointments] = useState([]);
   const [records, setRecords] = useState([]);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   useEffect(() => {
     if (isAdmin()) {
@@ -48,8 +51,8 @@ export default function Dashboard() {
   if (!isAdmin() && !appointments) return <Typography>Loading...</Typography>;
 
   return (
-    <Box sx={{ p: 3, bgcolor: (theme) => theme.palette.custom.pageBackground, minHeight: '100vh' }}>
-      <Container maxWidth="xl">
+    <Box sx={{ p: { xs: 2, sm: 3 }, bgcolor: (theme) => theme.palette.custom.pageBackground, minHeight: '100vh' }}>
+      <Container maxWidth="xl" sx={{ px: { xs: 2, sm: 3 } }}>
         <Typography variant="h4" sx={{ mb: 3, color: 'primary.main', fontWeight: 600 }}>
           {isAdmin() ? 'System Overview' : isDoctor() ? 'Doctor Dashboard' : 'Patient Dashboard'}
         </Typography>
@@ -57,113 +60,135 @@ export default function Dashboard() {
         {isAdmin() && data && (
           <>
             {/* KPI CARDS */}
-            <Grid container spacing={3}>
-              <Grid item xs={12} sm={6} md={3}>
-                <StatCard title="Total Doctors" value={data.doctors} icon={HospitalIcon} color="primary" />
+            <Grid container spacing={isMobile ? 1.5 : 3} sx={{ mb: 3, display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap' }}>
+              <Grid item xs={6} sm={6} md={3} sx={{ display: 'flex', width: { xs: '48%', sm: '48%', md: '23%' } }}>
+                <Box sx={{ width: '100%' }}>
+                  <StatCard title="Total Doctors" value={data.doctors} icon={HospitalIcon} color="primary" />
+                </Box>
               </Grid>
-              <Grid item xs={12} sm={6} md={3}>
-                <StatCard title="Total Patients" value={data.patients} icon={PeopleIcon} color="secondary" />
+              <Grid item xs={6} sm={6} md={3} sx={{ display: 'flex', width: { xs: '48%', sm: '48%', md: '23%' } }}>
+                <Box sx={{ width: '100%' }}>
+                  <StatCard title="Total Patients" value={data.patients} icon={PeopleIcon} color="secondary" />
+                </Box>
               </Grid>
-              <Grid item xs={12} sm={6} md={3}>
-                <StatCard title="Medical Records" value={data.records} icon={AssignmentIcon} color="primary" />
+              <Grid item xs={6} sm={6} md={3} sx={{ display: 'flex', width: { xs: '48%', sm: '48%', md: '23%' } }}>
+                <Box sx={{ width: '100%' }}>
+                  <StatCard title="Medical Records" value={data.records} icon={AssignmentIcon} color="primary" />
+                </Box>
               </Grid>
-              <Grid item xs={12} sm={6} md={3}>
-                <StatCard title="Appointments" value={data.appointments} icon={EventIcon} color="secondary" />
+              <Grid item xs={6} sm={6} md={3} sx={{ display: 'flex', width: { xs: '48%', sm: '48%', md: '23%' } }}>
+                <Box sx={{ width: '100%' }}>
+                  <StatCard title="Appointments" value={data.appointments} icon={EventIcon} color="secondary" />
+                </Box>
               </Grid>
             </Grid>
 
             {/* CHARTS */}
-            <Grid container spacing={3} sx={{ mt: 1 }}>
-              <Grid item xs={12} md={6}>
-                <Paper sx={{ p: 3, boxShadow: 2, bgcolor: (theme) => theme.palette.custom.cardBackground }}>
-                  <Typography variant="h6" sx={{ mb: 2 }}>
+            <Grid container spacing={isMobile ? 1 : 3} sx={{ mb: 3 }}>
+              <Grid item xs={12} lg={6}>
+                <Paper sx={{ p: 2, boxShadow: 2, bgcolor: (theme) => theme.palette.custom.cardBackground, width: '100%', height: '100%' }}>
+                  <Typography variant="h6" sx={{ mb: 1.5, fontSize: { xs: 13, sm: 16 } }}>
                     Appointments per Month
                   </Typography>
-                  <BarChart
-                    xAxis={[
-                      {
-                        scaleType: 'band',
-                        data: data.appointmentsPerMonth.map((m) => m.month)
-                      }
-                    ]}
-                    series={[
-                      { data: data.appointmentsPerMonth.map((m) => m.value) }
-                    ]}
-                    height={300}
-                  />
+                  <Box sx={{ overflowX: 'auto', width: '100%' }}>
+                    <div style={{ minWidth: isMobile ? '150%' : '100%', maxWidth: '100%' }}>
+                      <BarChart
+                        xAxis={[
+                          {
+                            scaleType: 'band',
+                            data: data.appointmentsPerMonth.map((m) => m.month)
+                          }
+                        ]}
+                        series={[
+                          { data: data.appointmentsPerMonth.map((m) => m.value) }
+                        ]}
+                        height={280}
+                        margin={{ left: 35, right: 5, top: 5, bottom: 25 }}
+                      />
+                    </div>
+                  </Box>
                 </Paper>
               </Grid>
 
-              <Grid item xs={12} md={6}>
-                <Paper sx={{ p: 3, boxShadow: 2, bgcolor: (theme) => theme.palette.custom.cardBackground }}>
-                  <Typography variant="h6" sx={{ mb: 2 }}>
+              <Grid item xs={12} lg={6}>
+                <Paper sx={{ p: 2, boxShadow: 2, bgcolor: (theme) => theme.palette.custom.cardBackground, width: '100%', height: '100%' }}>
+                  <Typography variant="h6" sx={{ mb: 1.5, fontSize: { xs: 13, sm: 16 } }}>
                     Records by Type
                   </Typography>
-                  <PieChart
-                    series={[
-                      {
-                        data: data.recordsByType
-                      }
-                    ]}
-                    height={300}
-                  />
+                  <Box sx={{ overflowX: 'auto', width: '100%', display: 'flex', justifyContent: 'center' }}>
+                    <div style={{ minWidth: '100%', maxWidth: '100%' }}>
+                      <PieChart
+                        series={[
+                          {
+                            data: data.recordsByType
+                          }
+                        ]}
+                        height={280}
+                      />
+                    </div>
+                  </Box>
                 </Paper>
               </Grid>
             </Grid>
 
-            {/* LINE CHART */}
-            <Grid container spacing={3} sx={{ mt: 1 }}>
+            {/* System Growth Chart */}
+            <Grid container spacing={isMobile ? 1 : 3} sx={{ mb: 3 }}>
               <Grid item xs={12}>
-                <Paper sx={{ p: 3, boxShadow: 2, bgcolor: (theme) => theme.palette.custom.cardBackground }}>
-                  <Typography variant="h6" sx={{ mb: 2 }}>
+                <Paper sx={{ p: 2, boxShadow: 2, bgcolor: (theme) => theme.palette.custom.cardBackground, width: '100%' }}>
+                  <Typography variant="h6" sx={{ mb: 1.5, fontSize: { xs: 13, sm: 16 } }}>
                     System Growth
                   </Typography>
-                  <LineChart
-                    xAxis={[{ data: ['Jan', 'Feb', 'Mar'] }]}
-                    series={[{ data: [5, 9, 15] }]}
-                    height={300}
-                  />
+                  <Box sx={{ overflowX: 'auto', width: '100%' }}>
+                    <div style={{ minWidth: isMobile ? '150%' : '100%', maxWidth: '100%' }}>
+                      <LineChart
+                        xAxis={[{ data: ['Jan', 'Feb', 'Mar'] }]}
+                        series={[{ data: [5, 9, 15] }]}
+                        height={280}
+                        margin={{ left: 35, right: 5, top: 5, bottom: 25 }}
+                      />
+                    </div>
+                  </Box>
                 </Paper>
               </Grid>
             </Grid>
 
             {/* Quick Actions for Admin */}
-            <Grid container spacing={3} sx={{ mt: 1 }}>
+            <Grid container spacing={isMobile ? 1 : 3}>
               <Grid item xs={12} md={4}>
-                <Paper sx={{ p: 3, boxShadow: 2, bgcolor: (theme) => theme.palette.custom.cardBackground }}>
-                  <Typography variant="h6" sx={{ mb: 2 }}>
+                <Paper sx={{ p: 2, boxShadow: 2, bgcolor: (theme) => theme.palette.custom.cardBackground, height: '100%' }}>
+                  <Typography variant="h6" sx={{ mb: 1, fontSize: { xs: 13, sm: 16 } }}>
                     Manage Users
                   </Typography>
-                  <Typography variant="body2" sx={{ mb: 2 }}>
+                  <Typography variant="body2" sx={{ mb: 1.5, fontSize: { xs: 12, sm: 14 } }}>
                     Add, edit, or deactivate user accounts.
                   </Typography>
-                  <Button variant="contained" component={Link} to="/manage-users">
+                  <Button variant="contained" component={Link} to="/manage-users" fullWidth size="small">
                     Manage Users
                   </Button>
                 </Paper>
               </Grid>
               <Grid item xs={12} md={4}>
-                <Paper sx={{ p: 3, boxShadow: 2, bgcolor: (theme) => theme.palette.custom.cardBackground }}>
-                  <Typography variant="h6" sx={{ mb: 2 }}>
+                <Paper sx={{ p: 2, boxShadow: 2, bgcolor: (theme) => theme.palette.custom.cardBackground, height: '100%' }}>
+                  <Typography variant="h6" sx={{ mb: 1, fontSize: { xs: 13, sm: 16 } }}>
                     View Patients
                   </Typography>
-                  <Typography variant="body2" sx={{ mb: 2 }}>
+                  <Typography variant="body2" sx={{ mb: 1.5, fontSize: { xs: 12, sm: 14 } }}>
                     See all patient records and details.
                   </Typography>
-                  <Button variant="outlined" component={Link} to="/patients">
+                  <Button variant="outlined" component={Link} to="/patients" fullWidth size="small">
                     View Patients
                   </Button>
                 </Paper>
               </Grid>
               <Grid item xs={12} md={4}>
-                <Paper sx={{ p: 3, boxShadow: 2, bgcolor: (theme) => theme.palette.custom.cardBackground }}>
-                  <Typography variant="h6" sx={{ mb: 2 }}>
+                <Paper sx={{ p: 2, boxShadow: 2, bgcolor: (theme) => theme.palette.custom.cardBackground, height: '100%' }}>
+                  <Typography variant="h6" sx={{ mb: 1, fontSize: { xs: 13, sm: 16 } }}>
                     System Reports
                   </Typography>
-                  <Typography variant="body2" sx={{ mb: 2 }}>
+                  <Typography variant="body2" sx={{ mb: 1.5, fontSize: { xs: 12, sm: 14 } }}>
                     Generate and view system reports.
                   </Typography>
-                  <Button variant="outlined" disabled>
+                  <Button variant="outlined" disabled fullWidth size="small">
                     Coming Soon
                   </Button>
                 </Paper>
@@ -176,8 +201,8 @@ export default function Dashboard() {
           <>
             {/* Stats Overview */}
             <Grid container spacing={3} sx={{ mb: 3 }}>
-              <Grid item xs={12} sm={6} md={4}>
-                <Card sx={{ boxShadow: 3, bgcolor: (theme) => theme.palette.custom.cardBackground }}>
+              <Grid item xs={12} sm={12} md={12} sx={{ display: 'flex' }}>
+                <Card sx={{ width: '100%', boxShadow: 3, bgcolor: (theme) => theme.palette.custom.cardBackground }}>
                   <CardContent>
                     <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                       <EventIcon sx={{ fontSize: 30, color: 'primary.main', mr: 1 }} />
@@ -188,8 +213,8 @@ export default function Dashboard() {
                   </CardContent>
                 </Card>
               </Grid>
-              <Grid item xs={12} sm={6} md={4}>
-                <Card sx={{ boxShadow: 3, bgcolor: (theme) => theme.palette.custom.cardBackground }}>
+              <Grid item xs={12} sm={12} md={12} sx={{ display: 'flex' }}>
+                <Card sx={{ width: '100%', boxShadow: 3, bgcolor: (theme) => theme.palette.custom.cardBackground }}>
                   <CardContent>
                     <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                       <TrendingUpIcon sx={{ fontSize: 30, color: 'secondary.main', mr: 1 }} />
@@ -200,11 +225,11 @@ export default function Dashboard() {
                   </CardContent>
                 </Card>
               </Grid>
-              <Grid item xs={12} sm={6} md={4}>
-                <Card sx={{ boxShadow: 3, bgcolor: (theme) => theme.palette.custom.cardBackground }}>
+              <Grid item xs={12} sm={12} md={12} sx={{ display: 'flex' }}>
+                <Card sx={{ width: '100%', boxShadow: 3, bgcolor: (theme) => theme.palette.custom.cardBackground }}>
                   <CardContent>
                     <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                      <AssignmentIcon sx={{ fontSize: 30, color: 'primary.main', mr: 1 }} />
+                                  <AssignmentIcon sx={{ fontSize: 30, color: 'primary.main', mr: 1 }} />
                       <Typography variant="h6" color="primary.main">Records</Typography>
                     </Box>
                     <Typography variant="h4" sx={{ fontWeight: 700 }}>{records.length}</Typography>

@@ -5,7 +5,7 @@ const getApiUrl = () => {
   return (
     (typeof import.meta !== 'undefined' ? import.meta.env?.VITE_API_URL : undefined) ||
     process.env.VITE_API_URL ||
-    'http://localhost:4000/api'
+    'http://localhost:4001/api'
   );
 };
 

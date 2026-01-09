@@ -7,7 +7,13 @@ import {
   IconButton,
   Menu,
   MenuItem,
-  Box
+  Box,
+  Drawer,
+  List,
+  ListItemButton,
+  ListItemText,
+  Divider,
+  useMediaQuery
 } from '@mui/material';
 
 import DashboardIcon from '@mui/icons-material/Dashboard';
@@ -16,13 +22,18 @@ import EventIcon from '@mui/icons-material/Event';
 import FolderIcon from '@mui/icons-material/Folder';
 import LogoutIcon from '@mui/icons-material/Logout';
 import AccountCircle from '@mui/icons-material/AccountCircle';
+import MenuIcon from '@mui/icons-material/Menu';
 
 import { Link, useLocation } from 'react-router-dom';
+import { useTheme } from '@mui/material/styles';
 import { isAdmin, isDoctor, isPatient, getRole, getName } from '../utils/auth';
 
 export default function Nav() {
   const location = useLocation();
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const [drawerOpen, setDrawerOpen] = React.useState(false);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -36,6 +47,15 @@ export default function Nav() {
     localStorage.clear();
     window.location.href = '/login';
   };
+
+  const navItems = [
+    { to: '/', label: 'Dashboard', Icon: DashboardIcon, show: true },
+    { to: '/manage-users', label: 'Manage Users', Icon: PeopleIcon, show: isAdmin() },
+    { to: '/patients', label: 'Patients', Icon: PeopleIcon, show: isAdmin() },
+    { to: '/doctors', label: 'Doctors', Icon: PeopleIcon, show: isAdmin() },
+    { to: '/appointments', label: 'Appointments', Icon: EventIcon, show: isAdmin() || isDoctor() || isPatient() },
+    { to: '/records', label: 'Records', Icon: FolderIcon, show: true }
+  ];
 
   const navBtn = (to, label, Icon) => (
     <Button
@@ -54,6 +74,7 @@ export default function Nav() {
           backgroundColor: (theme) => theme.palette.custom.navHover,
         }
       }}
+      onClick={() => setDrawerOpen(false)}
     >
       {label}
     </Button>
@@ -70,31 +91,31 @@ export default function Nav() {
           zIndex: (theme) => theme.zIndex.drawer + 1
         }}
       >
-        <Toolbar>
-        {navBtn('/', 'Dashboard', DashboardIcon)}
+        <Toolbar sx={{ gap: 1 }}>
+          {isMobile ? (
+            <IconButton
+              edge="start"
+              color="inherit"
+              aria-label="menu"
+              onClick={() => setDrawerOpen(true)}
+            >
+              <MenuIcon />
+            </IconButton>
+          ) : (
+            navBtn('/', 'Dashboard', DashboardIcon)
+          )}
 
-        {/* ADMIN */}
-        {isAdmin() && navBtn('/manage-users', 'Manage Users', PeopleIcon)}
-        {isAdmin() && navBtn('/patients', 'Patients', PeopleIcon)}
-        {isAdmin() && navBtn('/doctors', 'Doctors', PeopleIcon)}
+          {!isMobile && navItems.filter(i => i.show).map(i => i.to !== '/' ? navBtn(i.to, i.label, i.Icon) : null)}
 
-        {/* ADMIN + DOCTOR + PATIENT */}
-        {(isAdmin() || isDoctor() || isPatient()) &&
-          navBtn('/appointments', 'Appointments', EventIcon)}
+          <Box sx={{ flexGrow: 1 }} />
 
-        {/* ALL */}
-        {navBtn('/records', 'Records', FolderIcon)}
-
-        <div style={{ flexGrow: 1 }} />
-
-        <div>
           <Box 
             sx={{ 
               display: 'flex', 
               alignItems: 'center', 
               mr: 1, 
               cursor: 'pointer',
-              px: 1.5,
+              px: 1.25,
               py: 0.5,
               borderRadius: 2,
               '&:hover': {
@@ -103,7 +124,7 @@ export default function Nav() {
             }}
             onClick={handleMenu}
           >
-            <Typography variant="body1" sx={{ color: 'white', mr: 1, fontWeight: 500 }}>
+            <Typography variant="body2" sx={{ color: 'white', mr: 1, fontWeight: 600 }}>
               {getName() || 'User'}
             </Typography>
             <AccountCircle />
@@ -132,9 +153,42 @@ export default function Nav() {
               Logout
             </MenuItem>
           </Menu>
-        </div>
         </Toolbar>
       </AppBar>
+
+      <Drawer 
+        anchor="left" 
+        open={drawerOpen} 
+        onClose={() => setDrawerOpen(false)}
+      >
+        <Box sx={{ width: 260, bgcolor: 'background.paper', height: '100%', display: 'flex', flexDirection: 'column', pt: '64px' }}>
+          <List sx={{ pt: 0 }}>
+            {navItems.filter(i => i.show).map(item => (
+              <ListItemButton
+                key={item.to}
+                component={Link}
+                to={item.to}
+                selected={location.pathname === item.to}
+                onClick={() => setDrawerOpen(false)}
+              >
+                <item.Icon sx={{ mr: 2 }} />
+                <ListItemText primary={item.label} />
+              </ListItemButton>
+            ))}
+          </List>
+          <Divider sx={{ mt: 'auto' }} />
+          <List>
+            <ListItemButton component={Link} to="/profile" onClick={() => setDrawerOpen(false)}>
+              <AccountCircle sx={{ mr: 2 }} />
+              <ListItemText primary="My Profile" />
+            </ListItemButton>
+            <ListItemButton onClick={handleLogout}>
+              <LogoutIcon sx={{ mr: 2 }} />
+              <ListItemText primary="Logout" />
+            </ListItemButton>
+          </List>
+        </Box>
+      </Drawer>
       <Toolbar />
     </>
   );
