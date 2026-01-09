@@ -13,7 +13,10 @@ jest.mock('../api/client', () => {
   mockAPI.post = jest.fn();
   mockAPI.put = jest.fn();
   mockAPI.delete = jest.fn();
-  return { default: mockAPI };
+  return { 
+    default: mockAPI,
+    getBaseUrl: () => 'http://localhost:4001'
+  };
 });
 
 const theme = createTheme({

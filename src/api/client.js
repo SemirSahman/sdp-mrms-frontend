@@ -1,7 +1,9 @@
 import axios from 'axios';
 
+const apiBaseUrl = import.meta.env.VITE_API_URL || 'http://localhost:4001/api';
+
 const API = axios.create({ 
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:4001/api' 
+  baseURL: apiBaseUrl
 });
 let pending = 0;
 const notify = () => {
@@ -40,9 +42,8 @@ API.interceptors.response.use(
 
 // Export the base URL for use in components
 export const getBaseUrl = () => {
-  const apiUrl = getApiUrl();
   // Remove /api suffix if present to get base URL
-  return apiUrl.replace(/\/api$/, '');
+  return apiBaseUrl.replace(/\/api$/, '');
 };
 
 export default API;
