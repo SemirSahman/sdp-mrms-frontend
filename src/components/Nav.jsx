@@ -18,6 +18,8 @@ import {
 
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import PeopleIcon from '@mui/icons-material/People';
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
+import LocalHospitalIcon from '@mui/icons-material/LocalHospital';
 import EventIcon from '@mui/icons-material/Event';
 import FolderIcon from '@mui/icons-material/Folder';
 import LogoutIcon from '@mui/icons-material/Logout';
@@ -50,9 +52,9 @@ export default function Nav() {
 
   const navItems = [
     { to: '/', label: 'Dashboard', Icon: DashboardIcon, show: true },
-    { to: '/manage-users', label: 'Manage Users', Icon: PeopleIcon, show: isAdmin() },
+    { to: '/manage-users', label: 'Manage Users', Icon: ManageAccountsIcon, show: isAdmin() },
     { to: '/patients', label: 'Patients', Icon: PeopleIcon, show: isAdmin() },
-    { to: '/doctors', label: 'Doctors', Icon: PeopleIcon, show: isAdmin() },
+    { to: '/doctors', label: 'Doctors', Icon: LocalHospitalIcon, show: isAdmin() },
     { to: '/appointments', label: 'Appointments', Icon: EventIcon, show: isAdmin() || isDoctor() || isPatient() },
     { to: '/records', label: 'Records', Icon: FolderIcon, show: true }
   ];

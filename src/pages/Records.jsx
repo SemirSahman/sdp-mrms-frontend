@@ -389,7 +389,7 @@ export default function Records() {
                 helperText={errors.title}
                 placeholder="e.g., Lab Results, X-Ray"
                 size="small"
-                sx={{ mb: 1.5 }}
+                sx={{ mb: 1.5, bgcolor: 'white' }}
               />
               <TextField
                 fullWidth
@@ -402,6 +402,7 @@ export default function Records() {
                 helperText={errors.description}
                 placeholder="Detailed description of the record..."
                 size="small"
+                sx={{ bgcolor: 'white' }}
               />
             </Box>
           </Box>
@@ -446,7 +447,7 @@ export default function Records() {
                     size="small"
                   />
                 )}
-                sx={{ mb: 2 }}
+                  sx={{ mb: 2, bgcolor: 'white' }}
               />
               
               {/* File Upload */}
@@ -455,7 +456,7 @@ export default function Records() {
                 borderRadius: 1,
                 p: 2,
                 textAlign: 'center',
-                bgcolor: '#fafafa',
+                bgcolor: 'white',
                 cursor: 'pointer',
                 transition: 'all 0.2s',
                 '&:hover': {

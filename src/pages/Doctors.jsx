@@ -347,7 +347,7 @@ export default function Doctors() {
                   helperText={errors.name}
                   placeholder="Dr. John Smith"
                   size="small"
-                  sx={{ mb: 1.5 }}
+                  sx={{ mb: 1.5, bgcolor: 'white' }}
                 />
                 <TextField
                   label="Email Address"
@@ -359,6 +359,7 @@ export default function Doctors() {
                   helperText={errors.email}
                   placeholder="doctor@example.com"
                   size="small"
+                  sx={{ bgcolor: 'white' }}
                 />
               </Box>
             </Box>
@@ -393,6 +394,7 @@ export default function Doctors() {
                   helperText={errors.specialization}
                   placeholder="e.g., Cardiology, Pediatrics"
                   size="small"
+                  sx={{ bgcolor: 'white' }}
                 />
               </Box>
             </Box>

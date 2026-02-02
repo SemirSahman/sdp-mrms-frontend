@@ -371,7 +371,7 @@ export default function Patients() {
                   helperText={errors.name}
                   placeholder="John Doe"
                   size="small"
-                  sx={{ mb: 1.5 }}
+                  sx={{ mb: 1.5, bgcolor: 'white' }}
                 />
                 <TextField
                   label="Email Address"
@@ -383,6 +383,7 @@ export default function Patients() {
                   helperText={errors.email}
                   placeholder="john@example.com"
                   size="small"
+                  sx={{ bgcolor: 'white' }}
                 />
               </Box>
             </Box>
@@ -417,7 +418,7 @@ export default function Patients() {
                   helperText={errors.uniqueCitizenIdentifier}
                   placeholder="1234567890"
                   size="small"
-                  sx={{ mb: 1.5 }}
+                  sx={{ mb: 1.5, bgcolor: 'white' }}
                 />
                 <TextField
                   label="Date of Birth"
@@ -429,6 +430,7 @@ export default function Patients() {
                   error={!!errors.dob}
                   helperText={errors.dob}
                   size="small"
+                  sx={{ bgcolor: 'white' }}
                 />
               </Box>
             </Box>
