@@ -2,6 +2,9 @@
 
 Medical Records Management System - Frontend
 
+## About
+This project was developed as part of my Bachelor's thesis at IBU Sarajevo.
+
 ## Tech Stack
 
 - React 18
